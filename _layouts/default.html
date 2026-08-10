@@ -7,18 +7,14 @@
   <title>br1’s homepage | project index</title>
   <meta name="description" content="br1 portfolio — CRISPR-Cas9 and interactive experiments">
   
-  <!-- Google Fonts: multiple typeface options for visual testing -->
+  <!-- Google Fonts: refined options similar to Space Grotesk style -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500&family=Space+Grotesk:wght@300;400;500&family=DM+Mono:wght@300;400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Syne:wght@400;500;600&family=Manrope:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   
   <style>
     /* ----- CSS Custom Properties & Theme Setup ----- */
     :root {
-      --font-primary: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      --font-heading: 'Space Grotesk', 'Inter', sans-serif;
-      --font-mono: 'DM Mono', monospace;
-      
       /* Light theme (default) */
       --bg: #f8f8f6;
       --surface: #ffffff;
@@ -28,13 +24,17 @@
       --border-light: #d4d4ce;
       --border-medium: #c5c5bc;
       --hover-bg: #f0f0e8;
-      --card-overlay: rgba(0, 0, 0, 0.25);
+      --card-overlay: rgba(0, 0, 0, 0.3);
       --arrow-color: #4a4a42;
-      --distortion-color: rgba(0,0,0,0.08);
       
-      /* font style variant variables (dynamically changed via class) */
-      --current-font: 'Inter', sans-serif;
+      /* font style variables */
+      --current-font: 'Space Grotesk', sans-serif;
       --current-heading: 'Space Grotesk', sans-serif;
+      
+      /* distortion colors for animation */
+      --distort-color1: #f44336;
+      --distort-color2: #2196f3;
+      --hover-text-color: #4caf50;
     }
 
     /* Dark theme overrides */
@@ -47,12 +47,14 @@
       --border-light: #3a3a36;
       --border-medium: #4f4e46;
       --hover-bg: #2c2c28;
-      --card-overlay: rgba(0,0,0,0.45);
+      --card-overlay: rgba(0,0,0,0.55);
       --arrow-color: #bfbbb0;
-      --distortion-color: rgba(255,255,255,0.1);
+      --distort-color1: #ff5252;
+      --distort-color2: #448aff;
+      --hover-text-color: #69f0ae;
     }
 
-    /* System preference: auto theme via media query, applied if data-theme="auto" */
+    /* System preference auto theme */
     @media (prefers-color-scheme: dark) {
       [data-theme="auto"] {
         --bg: #1a1a1a;
@@ -63,9 +65,11 @@
         --border-light: #3a3a36;
         --border-medium: #4f4e46;
         --hover-bg: #2c2c28;
-        --card-overlay: rgba(0,0,0,0.5);
+        --card-overlay: rgba(0,0,0,0.6);
         --arrow-color: #bfbbb0;
-        --distortion-color: rgba(255,255,255,0.12);
+        --distort-color1: #ff5252;
+        --distort-color2: #448aff;
+        --hover-text-color: #69f0ae;
       }
     }
 
@@ -97,7 +101,7 @@
       flex-direction: column;
     }
 
-    /* ----- HEADER : flexible with theme & font controls ----- */
+    /* ----- HEADER ----- */
     .site-header {
       display: flex;
       justify-content: space-between;
@@ -112,7 +116,7 @@
     .site-title {
       font-family: var(--current-heading);
       font-size: 2rem;
-      font-weight: 420;
+      font-weight: 500;
       letter-spacing: -0.03em;
       text-decoration: none;
       color: var(--text-primary);
@@ -131,7 +135,7 @@
       flex-wrap: wrap;
     }
 
-    /* Font style switcher (small pills) */
+    /* Font style switcher */
     .font-switcher {
       display: flex;
       gap: 0.5rem;
@@ -216,7 +220,7 @@
     .large-heading {
       font-family: var(--current-heading);
       font-size: clamp(3.2rem, 8vw, 5.8rem);
-      font-weight: 360;
+      font-weight: 400;
       line-height: 0.95;
       letter-spacing: -0.035em;
       color: var(--text-primary);
@@ -225,7 +229,7 @@
 
     .subdued-desc {
       font-size: 1.1rem;
-      font-weight: 330;
+      font-weight: 350;
       color: var(--text-secondary);
       max-width: 440px;
       margin-top: 0.5rem;
@@ -240,7 +244,7 @@
       font-weight: 400;
     }
 
-    /* ----- PROJECT SHOWCASE with background image & text distortion ----- */
+    /* ----- PROJECT SHOWCASE ----- */
     .project-showcase {
       display: flex;
       flex-direction: column;
@@ -249,7 +253,7 @@
       margin-top: 0.5rem;
     }
 
-    /* Project card : background image zooms and darkens */
+    /* Project card */
     .project-item {
       display: flex;
       flex-direction: row;
@@ -270,7 +274,7 @@
       isolation: isolate;
     }
 
-    /* Dark overlay for readability, intensifies on hover */
+    /* Dark overlay */
     .project-item::before {
       content: '';
       position: absolute;
@@ -278,15 +282,13 @@
       background: var(--card-overlay);
       z-index: 1;
       transition: background 0.4s ease;
-      backdrop-filter: blur(0px);
     }
 
     .project-item:hover::before {
-      background: rgba(0, 0, 0, 0.55);
-      backdrop-filter: blur(1px);
+      background: rgba(0, 0, 0, 0.65);
     }
 
-    /* Background image zoom on hover */
+    /* Background image zoom */
     .project-item::after {
       content: '';
       position: absolute;
@@ -305,16 +307,17 @@
       filter: blur(0.5px) brightness(0.9);
     }
 
-    /* Content sits above overlays */
+    /* Content above overlays */
     .project-title, .project-meta {
       position: relative;
       z-index: 2;
     }
 
+    /* Project title with distortion animation */
     .project-title {
       font-family: var(--current-heading);
       font-size: 2.9rem;
-      font-weight: 430;
+      font-weight: 500;
       letter-spacing: -0.03em;
       color: #ffffff;
       line-height: 1.2;
@@ -323,22 +326,40 @@
       align-items: center;
       gap: 0.5rem;
       text-shadow: 0 2px 8px rgba(0,0,0,0.6);
-      transition: letter-spacing 0.25s, text-shadow 0.3s;
-      /* text distortion base: uses SVG filter for glitch effect on hover */
-      filter: url('#distortion-filter') none;
-      -webkit-filter: none;
+      transition: color 0.25s ease;
+      /* Distortion animation applied via class on hover */
     }
 
-    /* Distortion effect active on hover (using SVG filter) */
+    /* Distortion animation class (triggered on hover via JS) */
+    .project-title.distort-text {
+      animation: distort 400ms infinite;
+    }
+
+    /* Keyframes for text distortion */
+    @keyframes distort {
+      0% {
+        text-shadow: 5px 4px var(--distort-color1), -5px -6px var(--distort-color2);
+      }
+      25% {
+        text-shadow: -5px -6px var(--distort-color1), 5px 4px var(--distort-color2);
+      }
+      50% {
+        text-shadow: 5px -4px var(--distort-color1), -8px 4px var(--distort-color2);
+      }
+      75% {
+        text-shadow: -8px -4px var(--distort-color1), -5px -4px var(--distort-color2);
+      }
+      100% {
+        text-shadow: -5px 0 var(--distort-color1), 5px -4px var(--distort-color2);
+      }
+    }
+
+    /* Green text color on hover */
     .project-item:hover .project-title {
-      filter: url('#distortion-filter');
-      -webkit-filter: url('#distortion-filter');
-      letter-spacing: 0.02em;
-      text-shadow: 0 4px 12px rgba(0,0,0,0.8), 2px 2px 0 rgba(255,255,255,0.15);
-      transition: filter 0.15s, letter-spacing 0.2s;
+      color: var(--hover-text-color);
     }
 
-    /* View label replacement */
+    /* View label - hidden by default, visible on hover */
     .view-label {
       font-size: 1.1rem;
       font-weight: 400;
@@ -351,10 +372,13 @@
       padding: 0.2rem 0.9rem;
       border-radius: 2rem;
       backdrop-filter: blur(4px);
-      transition: background 0.2s;
+      transition: opacity 0.25s ease, background 0.2s;
+      opacity: 0;
+      pointer-events: none;
     }
 
     .project-item:hover .view-label {
+      opacity: 1;
       background: rgba(0,0,0,0.65);
     }
 
@@ -385,9 +409,9 @@
       border-radius: 1rem;
     }
 
-    /* second project placeholder (also with background) */
+    /* Background images */
     .bg-crispr {
-      background-image: url('https://images.unsplash.com/photo-1581093588401-fbb62a02f120?q=80&w=2070&auto=format&fit=crop');
+      background-image: url('https://images.unsplash.com/photo-1532187863486-6b8e50f5e5a5?q=80&w=2070&auto=format&fit=crop');
     }
 
     .bg-lab {
@@ -432,44 +456,27 @@
         font-size: 2.2rem;
       }
     }
-
-    /* hidden SVG filter for text distortion (inspired by glitch effect) */
-    .svg-filters {
-      position: absolute;
-      width: 0;
-      height: 0;
-    }
   </style>
 </head>
 <body>
-  <!-- SVG filters for text distortion (CSS referenced) -->
-  <svg class="svg-filters" aria-hidden="true">
-    <defs>
-      <filter id="distortion-filter" x="-20%" y="-20%" width="140%" height="140%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.03 0.015" numOctaves="2" result="noise" seed="3" />
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="7" xChannelSelector="R" yChannelSelector="G" />
-      </filter>
-    </defs>
-  </svg>
-
   <div class="container">
     <!-- Header with font switcher and theme toggle -->
     <header class="site-header">
       <a href="/" class="site-title">br1<span>·portfolio</span></a>
       
       <div class="header-controls">
-        <!-- Font style examples: Inter / Space Grotesk / Outfit / DM Mono -->
+        <!-- Font style examples: Space Grotesk, Syne, Manrope, Plus Jakarta Sans -->
         <div class="font-switcher" id="fontSwitcher">
-          <button class="font-btn active" data-font="inter">Inter</button>
-          <button class="font-btn" data-font="space">Space</button>
-          <button class="font-btn" data-font="outfit">Outfit</button>
-          <button class="font-btn" data-font="mono">Mono</button>
+          <button class="font-btn active" data-font="space">Space</button>
+          <button class="font-btn" data-font="syne">Syne</button>
+          <button class="font-btn" data-font="manrope">Manrope</button>
+          <button class="font-btn" data-font="jakarta">Jakarta</button>
         </div>
         
         <!-- Theme toggle: light / dark / auto -->
         <div class="theme-toggle" id="themeToggle">
           <button class="theme-option active" data-theme="light">☀️ Light</button>
-          <button class="theme-option" data-theme="dark">🌃 Dark</button>
+          <button class="theme-option" data-theme="dark">🌙 Dark</button>
           <button class="theme-option" data-theme="auto">💻 Auto</button>
         </div>
       </div>
@@ -491,7 +498,7 @@
 
       <!-- Project cards with background images & distortion -->
       <div class="project-showcase">
-        <!-- CRISPR project with background -->
+        <!-- CRISPR project -->
         <a href="https://crispr-blogtest.vercel.app/" class="project-item bg-crispr" target="_blank" rel="noopener noreferrer">
           <div class="project-title">
             CRISPR-Cas9
@@ -503,7 +510,7 @@
           </div>
         </a>
         
-        <!-- Second example project (visual placeholder) -->
+        <!-- Second example project -->
         <a href="#" class="project-item bg-lab" style="pointer-events: none; opacity: 0.9;">
           <div class="project-title">
             Lab Notebook
@@ -531,7 +538,7 @@
 
   <script>
     (function() {
-      // ----- THEME LOGIC (light/dark/auto) -----
+      // ----- THEME LOGIC -----
       const htmlElement = document.documentElement;
       const themeButtons = document.querySelectorAll('#themeToggle .theme-option');
       
@@ -539,7 +546,6 @@
         htmlElement.setAttribute('data-theme', theme);
         localStorage.setItem('br1-theme', theme);
         
-        // Update active button state
         themeButtons.forEach(btn => {
           const btnTheme = btn.getAttribute('data-theme');
           if (btnTheme === theme) {
@@ -550,7 +556,6 @@
         });
       }
       
-      // Load saved theme or default to light
       const savedTheme = localStorage.getItem('br1-theme') || 'light';
       setTheme(savedTheme);
       
@@ -561,20 +566,19 @@
         });
       });
       
-      // ----- FONT SWITCHER (visual comparison) -----
+      // ----- FONT SWITCHER -----
       const fontButtons = document.querySelectorAll('#fontSwitcher .font-btn');
       const rootStyle = document.documentElement.style;
       
-      // Font families mapping
       const fontMap = {
-        inter: { primary: "'Inter', sans-serif", heading: "'Space Grotesk', 'Inter', sans-serif" },
         space: { primary: "'Space Grotesk', sans-serif", heading: "'Space Grotesk', sans-serif" },
-        outfit: { primary: "'Outfit', sans-serif", heading: "'Outfit', sans-serif" },
-        mono: { primary: "'DM Mono', monospace", heading: "'DM Mono', monospace" }
+        syne: { primary: "'Syne', sans-serif", heading: "'Syne', sans-serif" },
+        manrope: { primary: "'Manrope', sans-serif", heading: "'Manrope', sans-serif" },
+        jakarta: { primary: "'Plus Jakarta Sans', sans-serif", heading: "'Plus Jakarta Sans', sans-serif" }
       };
       
       function applyFont(fontKey) {
-        const fonts = fontMap[fontKey] || fontMap.inter;
+        const fonts = fontMap[fontKey] || fontMap.space;
         rootStyle.setProperty('--current-font', fonts.primary);
         rootStyle.setProperty('--current-heading', fonts.heading);
         
@@ -590,8 +594,7 @@
         localStorage.setItem('br1-font', fontKey);
       }
       
-      // Load saved font or default inter
-      const savedFont = localStorage.getItem('br1-font') || 'inter';
+      const savedFont = localStorage.getItem('br1-font') || 'space';
       applyFont(savedFont);
       
       fontButtons.forEach(btn => {
@@ -601,9 +604,23 @@
         });
       });
       
-      // Optional: ensure distortion works on touch devices (hover simulation)
-      // The CSS handles hover; distortion is applied via filter on hover.
-      console.log('✨ br1 portfolio – theme & font ready. Hover over projects for distortion.');
+      // ----- DISTORTION EFFECT ON HOVER (add/remove class) -----
+      const projectItems = document.querySelectorAll('.project-item');
+      
+      projectItems.forEach(item => {
+        const titleElement = item.querySelector('.project-title');
+        if (!titleElement) return;
+        
+        item.addEventListener('mouseenter', () => {
+          titleElement.classList.add('distort-text');
+        });
+        
+        item.addEventListener('mouseleave', () => {
+          titleElement.classList.remove('distort-text');
+        });
+      });
+      
+      console.log('✨ br1 portfolio – distortion & green hover active.');
     })();
   </script>
 </body>
