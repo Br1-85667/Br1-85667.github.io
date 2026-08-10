@@ -1,52 +1,610 @@
 <!DOCTYPE html>
-<html lang="{{ site.lang | default: "en-US" }}">
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>br1’s homepage | project index</title>
+  <meta name="description" content="br1 portfolio — CRISPR-Cas9 and interactive experiments">
+  
+  <!-- Google Fonts: multiple typeface options for visual testing -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500&family=Space+Grotesk:wght@300;400;500&family=DM+Mono:wght@300;400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ----- CSS Custom Properties & Theme Setup ----- */
+    :root {
+      --font-primary: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --font-heading: 'Space Grotesk', 'Inter', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+      
+      /* Light theme (default) */
+      --bg: #f8f8f6;
+      --surface: #ffffff;
+      --text-primary: #1a1a1a;
+      --text-secondary: #4a4a42;
+      --text-muted: #6b6b60;
+      --border-light: #d4d4ce;
+      --border-medium: #c5c5bc;
+      --hover-bg: #f0f0e8;
+      --card-overlay: rgba(0, 0, 0, 0.25);
+      --arrow-color: #4a4a42;
+      --distortion-color: rgba(0,0,0,0.08);
+      
+      /* font style variant variables (dynamically changed via class) */
+      --current-font: 'Inter', sans-serif;
+      --current-heading: 'Space Grotesk', sans-serif;
+    }
 
-{% seo %}
-    <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
-    <!--[if lt IE 9]>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <![endif]-->
-    {% include head-custom.html %}
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1><a href="{{ "/" | absolute_url }}">{{ site.title | default: site.github.repository_name }}</a></h1>
+    /* Dark theme overrides */
+    [data-theme="dark"] {
+      --bg: #1a1a1a;
+      --surface: #252525;
+      --text-primary: #f0ede8;
+      --text-secondary: #bfbbb0;
+      --text-muted: #9c978a;
+      --border-light: #3a3a36;
+      --border-medium: #4f4e46;
+      --hover-bg: #2c2c28;
+      --card-overlay: rgba(0,0,0,0.45);
+      --arrow-color: #bfbbb0;
+      --distortion-color: rgba(255,255,255,0.1);
+    }
 
-        {% if site.logo %}
-          <img src="{{site.logo | relative_url}}" alt="Logo" />
-        {% endif %}
+    /* System preference: auto theme via media query, applied if data-theme="auto" */
+    @media (prefers-color-scheme: dark) {
+      [data-theme="auto"] {
+        --bg: #1a1a1a;
+        --surface: #252525;
+        --text-primary: #f0ede8;
+        --text-secondary: #bfbbb0;
+        --text-muted: #9c978a;
+        --border-light: #3a3a36;
+        --border-medium: #4f4e46;
+        --hover-bg: #2c2c28;
+        --card-overlay: rgba(0,0,0,0.5);
+        --arrow-color: #bfbbb0;
+        --distortion-color: rgba(255,255,255,0.12);
+      }
+    }
 
-        <p>{{ site.description | default: site.github.project_tagline }}</p>
+    /* ----- RESET & BASE ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        {% if site.github.is_project_page %}
-        <p class="view"><a href="{{ site.github.repository_url }}">View the Project on GitHub <small>{{ site.github.repository_nwo }}</small></a></p>
-        {% endif %}
+    body {
+      background-color: var(--bg);
+      font-family: var(--current-font);
+      color: var(--text-primary);
+      line-height: 1.5;
+      transition: background-color 0.25s ease, color 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-        {% if site.show_downloads %}
-        <ul class="downloads">
-          <li><a href="{{ site.github.zip_url }}">Download <strong>ZIP File</strong></a></li>
-          <li><a href="{{ site.github.tar_url }}">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="{{ site.github.repository_url }}">View On <strong>GitHub</strong></a></li>
-        </ul>
-        {% endif %}
-      </header>
-      <section>
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 3.5rem 2.5rem;
+      width: 100%;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
 
-      {{ content }}
+    /* ----- HEADER : flexible with theme & font controls ----- */
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 5rem;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 1.5rem;
+      gap: 1.5rem;
+    }
 
-      </section>
-      <footer>
-        {% if site.github.is_project_page %}
-        <p>This project is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
-        {% endif %}
-        <p><small>Hosted on GitHub Pages &mdash;</small></p>
-      </footer>
-    </div>
-    <script src="{{ "/assets/js/scale.fix.js" | relative_url }}"></script>
-  </body>
+    .site-title {
+      font-family: var(--current-heading);
+      font-size: 2rem;
+      font-weight: 420;
+      letter-spacing: -0.03em;
+      text-decoration: none;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .site-title span {
+      font-weight: 300;
+      color: var(--text-secondary);
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    /* Font style switcher (small pills) */
+    .font-switcher {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--surface);
+      padding: 0.25rem;
+      border-radius: 2rem;
+      border: 1px solid var(--border-light);
+    }
+
+    .font-btn {
+      background: transparent;
+      border: none;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      border-radius: 2rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+      font-family: inherit;
+      letter-spacing: 0.02em;
+    }
+
+    .font-btn.active {
+      background: var(--text-primary);
+      color: var(--bg);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    /* Theme toggle group */
+    .theme-toggle {
+      display: flex;
+      gap: 0.3rem;
+      background: var(--surface);
+      padding: 0.2rem;
+      border-radius: 2rem;
+      border: 1px solid var(--border-light);
+    }
+
+    .theme-option {
+      background: transparent;
+      border: none;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      border-radius: 2rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+    }
+
+    .theme-option.active {
+      background: var(--text-primary);
+      color: var(--bg);
+    }
+
+    /* ----- HERO SECTION ----- */
+    .hero-grid {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 5rem;
+      flex-wrap: wrap;
+      gap: 2.5rem;
+    }
+
+    .hero-left {
+      flex: 2 1 60%;
+    }
+
+    .hero-right {
+      flex: 1 1 30%;
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .large-heading {
+      font-family: var(--current-heading);
+      font-size: clamp(3.2rem, 8vw, 5.8rem);
+      font-weight: 360;
+      line-height: 0.95;
+      letter-spacing: -0.035em;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+
+    .subdued-desc {
+      font-size: 1.1rem;
+      font-weight: 330;
+      color: var(--text-secondary);
+      max-width: 440px;
+      margin-top: 0.5rem;
+    }
+
+    .location-tag {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 400;
+    }
+
+    /* ----- PROJECT SHOWCASE with background image & text distortion ----- */
+    .project-showcase {
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid var(--border-medium);
+      padding-top: 2rem;
+      margin-top: 0.5rem;
+    }
+
+    /* Project card : background image zooms and darkens */
+    .project-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      padding: 2.8rem 1.8rem;
+      margin-bottom: 0.2rem;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      background-size: cover;
+      background-position: center 30%;
+      background-repeat: no-repeat;
+      transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1);
+      border-bottom: 1px solid var(--border-light);
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    /* Dark overlay for readability, intensifies on hover */
+    .project-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--card-overlay);
+      z-index: 1;
+      transition: background 0.4s ease;
+      backdrop-filter: blur(0px);
+    }
+
+    .project-item:hover::before {
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(1px);
+    }
+
+    /* Background image zoom on hover */
+    .project-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: inherit;
+      background-size: cover;
+      background-position: center 30%;
+      background-repeat: no-repeat;
+      z-index: 0;
+      transition: transform 0.55s ease, filter 0.3s;
+      transform: scale(1);
+    }
+
+    .project-item:hover::after {
+      transform: scale(1.08);
+      filter: blur(0.5px) brightness(0.9);
+    }
+
+    /* Content sits above overlays */
+    .project-title, .project-meta {
+      position: relative;
+      z-index: 2;
+    }
+
+    .project-title {
+      font-family: var(--current-heading);
+      font-size: 2.9rem;
+      font-weight: 430;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      line-height: 1.2;
+      flex: 2 1 60%;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      transition: letter-spacing 0.25s, text-shadow 0.3s;
+      /* text distortion base: uses SVG filter for glitch effect on hover */
+      filter: url('#distortion-filter') none;
+      -webkit-filter: none;
+    }
+
+    /* Distortion effect active on hover (using SVG filter) */
+    .project-item:hover .project-title {
+      filter: url('#distortion-filter');
+      -webkit-filter: url('#distortion-filter');
+      letter-spacing: 0.02em;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.8), 2px 2px 0 rgba(255,255,255,0.15);
+      transition: filter 0.15s, letter-spacing 0.2s;
+    }
+
+    /* View label replacement */
+    .view-label {
+      font-size: 1.1rem;
+      font-weight: 400;
+      margin-left: 0.5rem;
+      display: inline-block;
+      color: rgba(255,255,255,0.9);
+      text-transform: lowercase;
+      letter-spacing: 0.03em;
+      background: rgba(0,0,0,0.4);
+      padding: 0.2rem 0.9rem;
+      border-radius: 2rem;
+      backdrop-filter: blur(4px);
+      transition: background 0.2s;
+    }
+
+    .project-item:hover .view-label {
+      background: rgba(0,0,0,0.65);
+    }
+
+    .project-meta {
+      font-size: 1rem;
+      font-weight: 350;
+      color: rgba(255, 255, 255, 0.9);
+      text-align: right;
+      flex: 1 1 25%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.7);
+    }
+
+    .project-type {
+      font-style: italic;
+      font-weight: 300;
+      margin-bottom: 0.2rem;
+    }
+
+    .project-domain {
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-size: 0.8rem;
+      background: rgba(255,255,255,0.2);
+      padding: 0.15rem 0.7rem;
+      border-radius: 1rem;
+    }
+
+    /* second project placeholder (also with background) */
+    .bg-crispr {
+      background-image: url('https://images.unsplash.com/photo-1532187863486-6b8e50f5e5a5?q=80&w=2070&auto=format&fit=crop');
+    }
+
+    .bg-lab {
+      background-image: url('https://images.unsplash.com/photo-1581093588401-fbb62a02f120?q=80&w=2070&auto=format&fit=crop');
+    }
+
+    /* Footer */
+    .site-footer {
+      margin-top: auto;
+      padding-top: 3rem;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 330;
+    }
+
+    .footer-left a {
+      color: var(--text-primary);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+    }
+
+    @media (max-width: 750px) {
+      .container {
+        padding: 2rem 1.5rem;
+      }
+      .project-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 2rem 1.5rem;
+      }
+      .project-meta {
+        align-items: flex-start;
+        text-align: left;
+        margin-top: 0.8rem;
+      }
+      .project-title {
+        font-size: 2.2rem;
+      }
+    }
+
+    /* hidden SVG filter for text distortion (inspired by glitch effect) */
+    .svg-filters {
+      position: absolute;
+      width: 0;
+      height: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- SVG filters for text distortion (CSS referenced) -->
+  <svg class="svg-filters" aria-hidden="true">
+    <defs>
+      <filter id="distortion-filter" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.03 0.015" numOctaves="2" result="noise" seed="3" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="7" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </defs>
+  </svg>
+
+  <div class="container">
+    <!-- Header with font switcher and theme toggle -->
+    <header class="site-header">
+      <a href="/" class="site-title">br1<span>·portfolio</span></a>
+      
+      <div class="header-controls">
+        <!-- Font style examples: Inter / Space Grotesk / Outfit / DM Mono -->
+        <div class="font-switcher" id="fontSwitcher">
+          <button class="font-btn active" data-font="inter">Inter</button>
+          <button class="font-btn" data-font="space">Space</button>
+          <button class="font-btn" data-font="outfit">Outfit</button>
+          <button class="font-btn" data-font="mono">Mono</button>
+        </div>
+        
+        <!-- Theme toggle: light / dark / auto -->
+        <div class="theme-toggle" id="themeToggle">
+          <button class="theme-option active" data-theme="light">☀️ Light</button>
+          <button class="theme-option" data-theme="dark">🌙 Dark</button>
+          <button class="theme-option" data-theme="auto">💻 Auto</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="hero-grid">
+        <div class="hero-left">
+          <h1 class="large-heading">selected<br>projects</h1>
+          <p class="subdued-desc">
+            Science communication, genomic tools & interactive experiments — built with clarity.
+          </p>
+        </div>
+        <div class="hero-right">
+          <span class="location-tag">📌 github.io</span>
+          <span style="font-weight:300; color: var(--text-secondary);">Jekyll + custom UI</span>
+        </div>
+      </div>
+
+      <!-- Project cards with background images & distortion -->
+      <div class="project-showcase">
+        <!-- CRISPR project with background -->
+        <a href="https://crispr-blogtest.vercel.app/" class="project-item bg-crispr" target="_blank" rel="noopener noreferrer">
+          <div class="project-title">
+            CRISPR-Cas9
+            <span class="view-label">— view —</span>
+          </div>
+          <div class="project-meta">
+            <span class="project-type">Interactive Blog</span>
+            <span class="project-domain">Genomics</span>
+          </div>
+        </a>
+        
+        <!-- Second example project (visual placeholder) -->
+        <a href="#" class="project-item bg-lab" style="pointer-events: none; opacity: 0.9;">
+          <div class="project-title">
+            Lab Notebook
+            <span class="view-label">— view —</span>
+          </div>
+          <div class="project-meta">
+            <span class="project-type">Data Visualization</span>
+            <span class="project-domain">Bioinformatics</span>
+          </div>
+        </a>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-left">
+        <span>© br1 — <a href="https://github.com/Br1-85667/Br1-85667.github.io" target="_blank">GitHub Pages</a></span>
+      </div>
+      <div style="display: flex; gap: 1.5rem;">
+        <a href="#" style="text-decoration: none; color: var(--text-primary);">CV</a>
+        <span style="color: var(--text-muted);">·</span>
+        <a href="#" style="text-decoration: none; color: var(--text-primary);">contact</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function() {
+      // ----- THEME LOGIC (light/dark/auto) -----
+      const htmlElement = document.documentElement;
+      const themeButtons = document.querySelectorAll('#themeToggle .theme-option');
+      
+      function setTheme(theme) {
+        htmlElement.setAttribute('data-theme', theme);
+        localStorage.setItem('br1-theme', theme);
+        
+        // Update active button state
+        themeButtons.forEach(btn => {
+          const btnTheme = btn.getAttribute('data-theme');
+          if (btnTheme === theme) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+      }
+      
+      // Load saved theme or default to light
+      const savedTheme = localStorage.getItem('br1-theme') || 'light';
+      setTheme(savedTheme);
+      
+      themeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const theme = btn.getAttribute('data-theme');
+          setTheme(theme);
+        });
+      });
+      
+      // ----- FONT SWITCHER (visual comparison) -----
+      const fontButtons = document.querySelectorAll('#fontSwitcher .font-btn');
+      const rootStyle = document.documentElement.style;
+      
+      // Font families mapping
+      const fontMap = {
+        inter: { primary: "'Inter', sans-serif", heading: "'Space Grotesk', 'Inter', sans-serif" },
+        space: { primary: "'Space Grotesk', sans-serif", heading: "'Space Grotesk', sans-serif" },
+        outfit: { primary: "'Outfit', sans-serif", heading: "'Outfit', sans-serif" },
+        mono: { primary: "'DM Mono', monospace", heading: "'DM Mono', monospace" }
+      };
+      
+      function applyFont(fontKey) {
+        const fonts = fontMap[fontKey] || fontMap.inter;
+        rootStyle.setProperty('--current-font', fonts.primary);
+        rootStyle.setProperty('--current-heading', fonts.heading);
+        
+        fontButtons.forEach(btn => {
+          const btnFont = btn.getAttribute('data-font');
+          if (btnFont === fontKey) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+        
+        localStorage.setItem('br1-font', fontKey);
+      }
+      
+      // Load saved font or default inter
+      const savedFont = localStorage.getItem('br1-font') || 'inter';
+      applyFont(savedFont);
+      
+      fontButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const fontKey = btn.getAttribute('data-font');
+          applyFont(fontKey);
+        });
+      });
+      
+      // Optional: ensure distortion works on touch devices (hover simulation)
+      // The CSS handles hover; distortion is applied via filter on hover.
+      console.log('✨ br1 portfolio – theme & font ready. Hover over projects for distortion.');
+    })();
+  </script>
+</body>
 </html>
